@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <meta charset="UTF-8">
+  <title>웨이팅 등록</title>
+</head>
 <body>
-  <h2>웨이팅 등록</h2>
+  <h2>부스 웨이팅</h2>
 
   <input id="name" placeholder="이름 입력">
-  <button onclick="join()">등록</button>
+  <button onclick="join()">대기 등록</button>
 
   <p id="result"></p>
 
@@ -13,6 +17,7 @@ const API = "https://script.google.com/macros/s/AKfycbwxoVfW52jITX5b4q-xs5zpUFZn
 
 async function join() {
   const name = document.getElementById("name").value;
+  if (!name) return alert("이름 입력!");
 
   await fetch(API, {
     method: "POST",
