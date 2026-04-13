@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <meta charset="UTF-8">
+  <title>관리자</title>
+</head>
 <body>
-  <h2>관리자</h2>
+  <h2>웨이팅 관리</h2>
 
   <button onclick="load()">새로고침</button>
 
@@ -17,12 +21,24 @@ async function load() {
   let list = document.getElementById("list");
   list.innerHTML = "";
 
-  data.slice(1).forEach((row, i) => {
+  for (let i = 1; i < data.length; i++) {
+    let name = data[i][0];
+    let time = data[i][1];
+
+    let date = new Date(time);
+    let formatted = date.toLocaleTimeString();
+
     let li = document.createElement("li");
-    li.innerText = (i + 1) + ". " + row[0];
+    li.innerText = i + ". " + name + " (" + formatted + ")";
     list.appendChild(li);
-  });
+  }
 }
+
+// 자동 새로고침 (5초마다)
+setInterval(load, 5000);
+
+// 처음 로딩
+load();
 </script>
 </body>
 </html>
