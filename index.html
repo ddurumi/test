@@ -5,7 +5,7 @@
   <title>웨이팅 등록</title>
 </head>
 <body>
-  <h2>부스 웨이팅(이름/전화번호)</h2>
+  <h2>부스 웨이팅</h2>
 
   <input id="name" placeholder="이름 입력">
   <button onclick="join()">대기 등록</button>
@@ -15,27 +15,52 @@
 <script>
 const API = "https://script.google.com/macros/s/AKfycbxt2LJdUqmj9gofvTwzN14yRFfl72LYXYLaoH6yzhkh26cD7ieD55oeDE9QM0tv7JIt/exec";
 
+// 페이지 열릴 때 자동 확인
+window.onload = checkMyStatus;
+
 async function join() {
   const name = document.getElementById("name").value;
   if (!name) return alert("이름 입력!");
 
-  // 1. 등록
+  // 이름 저장 (핵심🔥)
+  localStorage.setItem("myName", name);
+
   await fetch(API, {
     method: "POST",
     body: JSON.stringify({ name })
   });
 
-  // 2. 전체 목록 가져오기
+  checkMyStatus();
+}
+
+// 내 순번 확인
+async function checkMyStatus() {
+  const name = localStorage.getItem("myName");
+  if (!name) return;
+
   const res = await fetch(API);
   const data = await res.json();
 
-  // 3. 내 순번 계산 (맨 뒤 = 마지막)
-  const myNumber = data.length - 1; // 첫 줄 제목 제외
+  let found = false;
 
-  document.getElementById("result").innerText =
-    name + "님 등록 완료!\n현재 대기번호: " + myNumber +
-    "번\n앞에 " + (myNumber - 1) + "팀 있음";
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === name) {
+      document.getElementById("result").innerText =
+        name + "님\n현재 대기번호: " + i +
+        "번\n앞에 " + (i - 1) + "팀 있음";
+      found = true;
+      break;
+    }
+  }
+
+  if (!found) {
+    document.getElementById("result").innerText =
+      "이미 호출되었습니다 🎉";
+  }
 }
+
+// 5초마다 자동 갱신
+setInterval(checkMyStatus, 5000);
 </script>
 </body>
 </html>
