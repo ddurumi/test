@@ -2,18 +2,19 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>관리자</title>
+  <title>웨이팅 관리자</title>
 </head>
 <body>
   <h2>웨이팅 관리</h2>
 
   <button onclick="load()">새로고침</button>
+  <button onclick="callNext()">다음 호출</button>
   <button onclick="clearAll()">전체 초기화</button>
 
   <ul id="list"></ul>
 
 <script>
-const API = "https://script.google.com/macros/s/AKfycbzvP5T3NN8wVTuAn64wNC5qoZH27omVL19OBKbD_fcprC-p4kwjqFPkYC8MvXZHGIcJ/exec";
+const API = "https://script.google.com/macros/s/AKfycbxt2LJdUqmj9gofvTwzN14yRFfl72LYXYLaoH6yzhkh26cD7ieD55oeDE9QM0tv7JIt/exec";
 
 // 목록 불러오기
 async function load() {
@@ -36,23 +37,36 @@ async function load() {
   }
 }
 
+// 다음 호출 (맨 앞 삭제)
+async function callNext() {
+  if (!confirm("다음 사람 호출할까?")) return;
+
+  await fetch(API, {
+    method: "POST",
+    body: JSON.stringify({ action: "call" })
+  });
+
+  alert("다음 팀 호출됨!");
+  load();
+}
+
 // 전체 초기화
 async function clearAll() {
-  if (!confirm("진짜 초기화할거야?")) return;
+  if (!confirm("전체 초기화할까?")) return;
 
   await fetch(API, {
     method: "POST",
     body: JSON.stringify({ action: "clear" })
   });
 
-  alert("초기화 완료");
+  alert("초기화 완료!");
   load();
 }
 
 // 자동 새로고침 (5초마다)
 setInterval(load, 5000);
 
-// 처음 실행
+// 첫 로딩
 load();
 </script>
 </body>
